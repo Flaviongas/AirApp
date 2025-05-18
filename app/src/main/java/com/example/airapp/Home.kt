@@ -74,7 +74,7 @@ fun WeatherScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                MainWeatherInfo()
+                MainWeatherInfo(reduced=false)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -95,7 +95,7 @@ fun WeatherScreen(navController: NavController) {
 }
 
 @Composable
-fun MainWeatherInfo() {
+fun MainWeatherInfo(reduced: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -127,12 +127,14 @@ fun MainWeatherInfo() {
             }
 
             Spacer(modifier = Modifier.height(8.dp))
+            if(!reduced){
 
             Text(
                 text = "Marzo 28, 17:08",
                 color = Color.White,
                 fontSize = 16.sp
             )
+            }
         }
 
         // Estado del tiempo con gato asomándose
@@ -227,12 +229,14 @@ fun MainWeatherInfo() {
                 color = Color.White,
                 fontSize = 16.sp
             )
+            if(!reduced){
 
             Text(
                 text = "Max 3° Min -1°",
                 color = Color.White,
                 fontSize = 14.sp
             )
+            }
         }
     }
 }
@@ -474,6 +478,6 @@ fun NavButtons(navController: NavController) {
         verticalAlignment = Alignment.CenterVertically
     ){
         Button(onClick ={navController.navigate("Plots")} ) { Text(text = "Ver gráficos") }
-        Button(onClick ={navController.navigate("Days")} ) { Text(text = "Análisis por día") }
+        Button(onClick ={} ) { Text(text = "Análisis por día") }
     }
 }

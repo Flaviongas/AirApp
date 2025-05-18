@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
             ) {
 
                 val navController = rememberNavController()
-                NavHost(navController=navController,startDestination="Home",builder={
+                NavHost(navController=navController,startDestination="Plots",builder={
                     composable("Home",){
                         WeatherScreen(navController)
                     }

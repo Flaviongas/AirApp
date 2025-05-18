@@ -63,7 +63,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-        val nav_version = "2.9.0"
-
-        implementation("androidx.navigation:navigation-compose:$nav_version")
+    val nav_version = "2.9.0"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m3)
 }

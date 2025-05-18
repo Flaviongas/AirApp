@@ -46,5 +46,6 @@ fun navBar(navController: NavController) {
                 .background(Color.Black.copy(alpha = 0.4f))
         ) {
             Text("hello")
+            JetpackComposeBasicLineChart()
             Button(onClick ={navController.navigate("Home")} ) { Text(text = "Volver al Inicio") }
         }}}

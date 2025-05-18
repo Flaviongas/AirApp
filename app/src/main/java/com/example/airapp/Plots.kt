@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,7 +24,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -87,7 +90,7 @@ fun NavBar(navController: NavController) {
                         Spacer(modifier = Modifier.width(4.dp))
 
                         Text(
-                            text = "Historial de tiempo",
+                            text = "Historial de temperatura",
                             color = Color.White,
                             fontSize = 14.sp,
                             modifier = Modifier.padding(start = 10.dp, top = 10.dp)
@@ -96,10 +99,50 @@ fun NavBar(navController: NavController) {
                     JetpackComposeBasicLineChart()
                 }
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
+                Card(
+                    modifier = Modifier
+                        .height(190.dp).padding(vertical =10.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.2f)
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(12.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "☁\uFE0F",
+                                    fontSize = 16.sp,
+                                            modifier = Modifier.padding(bottom = 10.dp)
+                                )
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Text(
+                                    text = "Porcentaje de C02 hoy",
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.padding(bottom = 10.dp)
+                                )
+                            }
+                            PrettyBar("6 PM","440 ppm",0.5f)
+                            PrettyBar("7 PM","530 ppm",0.7f)
+                            PrettyBar("8 PM","653 ppm",0.9f)
+                            PrettyBar("9 PM","400 ppm",0.4f)
+}
+
+                    }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
                     WeatherMetricCardSimple(
                         title = "Alerta CO2",
                         value = "653 ppm",
@@ -116,7 +159,19 @@ fun NavBar(navController: NavController) {
                         modifier = Modifier.weight(1f)
                     )
                 }
-                Button(onClick = { navController.navigate("Home") }) { Text(text = "Volver al Inicio") }
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Button(onClick = { navController.navigate("Home") }) {
+                            Text(text = "Volver al Inicio")
+                        }
+                    }
+                }
+
             }
         }}}
 

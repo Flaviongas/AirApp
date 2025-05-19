@@ -42,8 +42,8 @@ fun Accordion(
         modifier = modifier.padding(vertical = 13.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable {
-                for (i in states.indices) states[i] = false
-                states[index] = true
+                for (i in states.indices) if(i!=index)states[i] = false
+                states[index] = !states[index]
             }
 
     ) {

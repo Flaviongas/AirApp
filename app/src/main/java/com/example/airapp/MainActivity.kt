@@ -1,4 +1,4 @@
-package com.example.airapp// acuerdate de cambiar esto
+package com.example.airapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
             ) {
 
                 val navController = rememberNavController()
-                NavHost(navController=navController,startDestination="Plots",builder={
+                NavHost(navController=navController,startDestination="Days",builder={
                     composable("Home",){
                         WeatherScreen(navController)
                     }

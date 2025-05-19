@@ -36,13 +36,12 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
     val txtField = remember { mutableStateOf(value) }
     val context = LocalContext.current                     // Contexto actual
     val userPreferences = remember { UserData(context) } // Instancia de UserPreferences
-    var savedName by remember { mutableStateOf("") }       // Nombre leído de DataStore
     val scope = rememberCoroutineScope()                   // Para lanzar corrutinas
 
     // Al iniciar, leer el nombre guardado
     LaunchedEffect(Unit) {
         userPreferences.getName.collect { name ->
-            savedName = name
+            txtField.value = name
         }
     }
 
@@ -98,7 +97,7 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                         Button(
                             onClick = {
                                 if (txtField.value.isEmpty()) {
-                                    txtFieldError.value = "Field can not be empty"
+                                    txtFieldError.value = "Ingrese un nombre"
                                     return@Button
                                 }
                                 scope.launch {

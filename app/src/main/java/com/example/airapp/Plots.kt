@@ -1,5 +1,6 @@
 package com.example.airapp
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,12 +22,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun Plots(navController: NavController){
@@ -35,6 +42,27 @@ fun Plots(navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavBar(navController: NavController) {
+    val barsValues = remember { mutableStateOf(List(4) { (4..8).random() }) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(5000)
+            barsValues.value = List(4) { (4..8).random() }
+        }
+    }
+    val animatedBars = remember {
+        List(4) { index ->
+            Animatable(barsValues.value[index].toFloat() / 10)
+        }
+    }
+
+    LaunchedEffect(barsValues.value) {
+        barsValues.value.forEachIndexed { index, newValue ->
+            launch {
+                animatedBars[index].animateTo(newValue.toFloat() / 10)
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -87,7 +115,7 @@ fun NavBar(navController: NavController) {
                         Spacer(modifier = Modifier.width(4.dp))
 
                         Text(
-                            text = "Historial de temperatura",
+                            text = "Predicción de temperatura",
                             color = Color.White,
                             fontSize = 14.sp,
                             modifier = Modifier.padding(start = 10.dp, top = 10.dp)
@@ -128,13 +156,14 @@ fun NavBar(navController: NavController) {
                                     modifier = Modifier.padding(bottom = 10.dp)
                                 )
                             }
-                            PrettyBar("6 PM","440 ppm",0.5f)
-                            PrettyBar("7 PM","530 ppm",0.7f)
-                            PrettyBar("8 PM","653 ppm",0.9f)
-                            PrettyBar("9 PM","400 ppm",0.4f)
+                                    PrettyBar("6 PM","${(animatedBars[0].value*700).toInt()} ppm",animatedBars[0].value)
+                            PrettyBar("7 PM","${(animatedBars[1].value*700).toInt()} ppm",animatedBars[1].value)
+                            PrettyBar("8 PM","${(animatedBars[2].value*700).toInt()} ppm",animatedBars[2].value)
+                            PrettyBar("9 PM","${(animatedBars[3].value*700).toInt()} ppm",animatedBars[3].value)
+
+                            }
 }
 
-                    }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -170,6 +199,7 @@ fun NavBar(navController: NavController) {
                 }
 
             }
-        }}}
+        }}
+}
 
 

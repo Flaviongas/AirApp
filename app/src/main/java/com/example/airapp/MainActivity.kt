@@ -31,9 +31,9 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-
+                // Sistema de Rutas básico
                 val navController = rememberNavController()
-                NavHost(navController=navController,startDestination="Days",builder={
+                NavHost(navController=navController,startDestination="Home",builder={
                     composable("Home",){
                         WeatherScreen(navController)
                     }

@@ -67,4 +67,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)
+    implementation("androidx.datastore:datastore-preferences:1.1.6")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation ("androidx.compose.material:material-icons-extended:1.1.0")
 }

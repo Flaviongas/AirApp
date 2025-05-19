@@ -19,6 +19,7 @@ package com.example.airapp
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +35,7 @@ import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 @Composable
@@ -65,19 +67,29 @@ private fun JetpackComposeBasicLineChart(
 fun JetpackComposeBasicLineChart(modifier: Modifier = Modifier) {
     val modelProducer = remember { CartesianChartModelProducer() }
     val daysOfWeek = listOf("Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom")
-    val repeatedDays = (1..16).map { index -> daysOfWeek[(index - 1) % 7] } // Repeat for 16 days
 
-    // 2. Random Y-values (between 0 and 20)
-    val randomYValues = List(16) { (0..20).random() }
+    // Repite de Los dias de la semana cuando el arreglo pasa de longitud 7
+    val repeatedDays = (1..16).map { index -> daysOfWeek[(index - 1) % 7] }
+
+    val randomYValues = remember { mutableStateOf(List(16) { (0..20).random() }) }
+
 
     // 3. Numeric X-values (1, 2, 3, ...)
     val xValues = (1..16).map { it.toFloat() }
 
+    // Se ejecuta al inicio
     LaunchedEffect(Unit) {
+        while (true) {
+            delay(5000)
+            randomYValues.value = List(16) { (0..20).random() }
+        }
+    }
+    // Se ejecuta cada vez que randomYValues cambia
+    LaunchedEffect(randomYValues.value) {
         modelProducer.runTransaction {
             // Learn more: https://patrykandpatrick.com/vmml6t.
 
-            lineSeries { series(x = xValues, y = randomYValues) }
+            lineSeries { series(x = xValues, y = randomYValues.value) }
 
         }
     }

@@ -29,12 +29,16 @@ import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -47,7 +51,13 @@ private fun JetpackComposeBasicLineChart(
     CartesianChartHost(
         chart =
         rememberCartesianChart(
-            rememberLineCartesianLayer(),
+            rememberLineCartesianLayer(
+               lineProvider = LineCartesianLayer.LineProvider.series(
+                   LineCartesianLayer.rememberLine(
+                       fill =  LineCartesianLayer.LineFill.single(fill(Color(0xFFB8E39B )))
+                   )
+               )
+            ),
             startAxis = VerticalAxis.rememberStart(label = rememberAxisLabelComponent(color= Color.White)),
             bottomAxis = HorizontalAxis.rememberBottom(
                 label = rememberAxisLabelComponent(color = Color.White),

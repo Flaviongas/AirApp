@@ -20,11 +20,15 @@ fun PrettyBar(hour:String,particles:String,progress:Float) {
         Text(hour, color = Color.White, modifier = Modifier.padding(horizontal = 2.dp))
 
         LinearProgressIndicator(
+            progress = { progress },
             gapSize = -15.dp,
             drawStopIndicator = {},
-            progress = { progress },
-            modifier = Modifier.height(17.dp).padding(horizontal = 5.dp)
+            modifier = Modifier
+                .height(17.dp)
+                .padding(horizontal = 5.dp)
                 .clip(RoundedCornerShape(10.dp)),
+            color = Color(0xFFB8E39B),  // Set the progress color
+            trackColor = Color(0xFFB8E39B).copy(alpha = 0.3f),  // Optional: lighter track
         )
         Text(
             particles,

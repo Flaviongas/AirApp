@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -534,7 +535,28 @@ fun NavButtons(navController: NavController) {
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ){
-        Button(onClick ={navController.navigate("Plots")} ) { Text(text = "Ver gráficos") }
-        Button(onClick ={navController.navigate("Days")} ) { Text(text = "Análisis por día") }
+        Button(
+            onClick = { navController.navigate("Plots") },
+            shape = RoundedCornerShape(28.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFB8E39B),
+                contentColor = Color.Black
+            ),
+            modifier = Modifier.padding(4.dp)
+        ) {
+            Text("Ver gráficos")
+        }
+
+        Button(
+            onClick = { navController.navigate("Days") },
+            shape = RoundedCornerShape(28.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFB8E39B),
+                contentColor = Color.Black
+            ),
+            modifier = Modifier.padding(4.dp)
+        ) {
+            Text("Análisis por día")
+        }
     }
 }

@@ -6,15 +6,14 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,8 +23,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Accordion(modifier: Modifier = Modifier, day : String, weather : String, emoji: String) {
-    var expanded by remember { mutableStateOf(false) }
+fun Accordion(
+    modifier: Modifier = Modifier,
+    day: String,
+    weather: String,
+    emoji: String,
+    index: Int,
+    states: SnapshotStateList<Boolean>
+) {
+    val expanded = states[index]
     val arrowRotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         label = "accordion-arrow"
@@ -35,7 +41,11 @@ fun Accordion(modifier: Modifier = Modifier, day : String, weather : String, emo
         color = MaterialTheme.colorScheme.surfaceDim,
         modifier = modifier.padding(vertical = 13.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable { expanded = !expanded }
+            .clickable {
+                for (i in states.indices) states[i] = false
+                states[index] = true
+            }
+
     ) {
         Column {
             // accordion header
@@ -74,21 +84,53 @@ fun Accordion(modifier: Modifier = Modifier, day : String, weather : String, emo
                     animationSpec = tween()
                 ) + fadeOut()
             ) {
-                Box(
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.surface,
-                            shape = RoundedCornerShape(8.dp)
-                        )
+Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(
-                        text = "Test2",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(12.dp)
+                    WeatherMetricCardSimple(
+                        title = "Alerta CO2",
+                        value = "653 ppm",
+                        status = "4h atrás",
+                        icon = "\uD83D\uDCA8",
+                        modifier = Modifier.weight(1f).padding(start = 15.dp),
+                        black = true
                     )
+
+                    WeatherMetricCardSimple(
+                        title = "Alerta Tem",
+                        value = "40 °C",
+                        status = "15h atrás",
+                        icon = "\uD83D\uDCA8",
+                        modifier = Modifier.weight(1f).padding(end = 15.dp),
+                        black = true
+                    )
+                }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        WeatherMetricCardSimple(
+                            title = "Calidad de aire",
+                            value = "ica 45",
+                            status = "Bueno",
+                            icon = "💨",
+                            modifier = Modifier.weight(1f).padding(start = 15.dp),
+                            black= true
+                        )
+
+                        WeatherMetricCardSimple(
+                            title = "CO₂",
+                            value = "400ppm",
+                            status = "Bueno",
+                            icon = "🌫️",
+                            modifier = Modifier.weight(1f).padding(end = 15.dp),
+                            black= true
+                        )
+                    }
+                }
                 }
             }
         }
     }
-}

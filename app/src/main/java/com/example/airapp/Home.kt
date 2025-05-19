@@ -333,7 +333,8 @@ fun WeatherMetricCardSimple(
     value: String,
     status: String,
     icon: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    black: Boolean = false
 ) {
     Card(
         modifier = modifier
@@ -361,7 +362,7 @@ fun WeatherMetricCardSimple(
 
                 Text(
                     text = title,
-                    color = Color.White,
+                    color = if(black) Color.Black else Color.White,
                     fontSize = 14.sp
                 )
             }
@@ -375,14 +376,14 @@ fun WeatherMetricCardSimple(
             ) {
                 Text(
                     text = value,
-                    color = Color.White,
+                    color = if(black) Color.Black else Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
 
                 Text(
                     text = status,
-                    color = if (status.startsWith("↑")) Color.Red else Color.White,
+                    color = if (status.startsWith("↑")) Color.Red else if(black)Color.Black else Color.White,
                     fontSize = 14.sp
                 )
             }
@@ -478,6 +479,6 @@ fun NavButtons(navController: NavController) {
         verticalAlignment = Alignment.CenterVertically
     ){
         Button(onClick ={navController.navigate("Plots")} ) { Text(text = "Ver gráficos") }
-        Button(onClick ={} ) { Text(text = "Análisis por día") }
+        Button(onClick ={navController.navigate("Days")} ) { Text(text = "Análisis por día") }
     }
 }

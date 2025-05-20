@@ -42,6 +42,8 @@ fun Plots(navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavBar(navController: NavController) {
+    // Esto representa la pantalla secundaria del prototipo físico (la que estaba al reverso)
+
     // Establecer valores iniciales de la barra
     val barsValues = remember { mutableStateOf(List(4) { (4..8).random() }) }
     LaunchedEffect(Unit) {

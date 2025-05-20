@@ -61,6 +61,8 @@ data class WeatherData(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreen(navController: NavController) {
+   // Esto representa la pantalla principal del prototipo físico
+
     val selectedTab = remember { mutableIntStateOf(0) }
     val showDialog =  remember { mutableStateOf(false) }
     if(showDialog.value)

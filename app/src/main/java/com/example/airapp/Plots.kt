@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -43,15 +42,18 @@ fun Plots(navController: NavController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavBar(navController: NavController) {
+    // Establecer valores iniciales de la barra
     val barsValues = remember { mutableStateOf(List(4) { (4..8).random() }) }
     LaunchedEffect(Unit) {
         while (true) {
-            delay(5000)
+            // Actualizar los valores de las barras cada 2 segundos
+            delay(2000)
             barsValues.value = List(4) { (4..8).random() }
         }
     }
     val animatedBars = remember {
         List(4) { index ->
+            // Meter datos objeto animable
             Animatable(barsValues.value[index].toFloat() / 10)
         }
     }
@@ -59,6 +61,7 @@ fun NavBar(navController: NavController) {
     LaunchedEffect(barsValues.value) {
         barsValues.value.forEachIndexed { index, newValue ->
             launch {
+                // Animar transición de cada barra
                 animatedBars[index].animateTo(newValue.toFloat() / 10)
             }
         }
@@ -69,7 +72,7 @@ fun NavBar(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        "Universidad, Autónoma",
+                        "Universidad Autónoma",
                         color = Color.White
                     )
                 },

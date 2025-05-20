@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Surface(
                 modifier = Modifier.fillMaxSize(),
+                // Fondo azul marino
                 color = MaterialTheme.colorScheme.background
             ) {
                 // Sistema de Rutas básico

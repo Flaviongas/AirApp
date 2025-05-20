@@ -32,6 +32,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+// "Objeto" para mantener estructura
 data class WeatherData(
     val Aire: String,
     val Dioxide: String,
@@ -59,8 +61,8 @@ data class WeatherData(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreen(navController: NavController) {
-    var selectedTab = remember { mutableStateOf(0) }
-    var showDialog =  remember { mutableStateOf(false) }
+    val selectedTab = remember { mutableIntStateOf(0) }
+    val showDialog =  remember { mutableStateOf(false) }
     if(showDialog.value)
         CustomDialog(value = "", setShowDialog = {
             showDialog.value = it
@@ -69,6 +71,7 @@ fun WeatherScreen(navController: NavController) {
         }
     Scaffold(
         topBar = {
+            // Barra superior
             TopAppBar(
                 title = {
                     Text(
@@ -115,10 +118,11 @@ fun WeatherScreen(navController: NavController) {
                     TransparentEditButton(onClick = { showDialog.value = true })
 
                 }
+                // Widget de tiempo con menos info
                 MainWeatherInfo(reduced=false)
 
                 Spacer(modifier = Modifier.height(16.dp))
-
+                // Seleccionar día para ver datos
                 DaySelector(selectedTab.value,
                     onTabSelected = {selectedTab.value = it})
 
@@ -303,6 +307,7 @@ fun DaySelector(selectedTab:Int, onTabSelected: (Int)-> Unit) {
                     .fillMaxHeight()
                     .padding(4.dp)
                     .clip(RoundedCornerShape(16.dp))
+                    // Pinta de verde la pestaña seleccionada
                     .background(if (selectedTab == index) Color(0xFFB8E39B) else Color.Transparent)
                     .clickable {  onTabSelected(index) },
                 contentAlignment = Alignment.Center
@@ -320,6 +325,7 @@ fun DaySelector(selectedTab:Int, onTabSelected: (Int)-> Unit) {
 @Composable
 fun WeatherMetrics(selectedTab: Int) {
 
+    // Datos para Hoy, Mañana y Pasado Mañana
     val weatherDays = listOf(
         WeatherData(
             "ica 22", "412 ppm", "715 hpa", "18°C",
@@ -481,6 +487,7 @@ fun HourlyForecast() {
     }
 }
 
+// Objeto para tener todo en una misma estructura
 data class HourlyWeather(
     val hour: String,
     val temp: Int,

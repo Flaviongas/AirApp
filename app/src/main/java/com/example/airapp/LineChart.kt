@@ -23,7 +23,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
@@ -32,7 +31,6 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
-import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
@@ -40,7 +38,6 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 @Composable
 private fun JetpackComposeBasicLineChart(
@@ -54,6 +51,7 @@ private fun JetpackComposeBasicLineChart(
             rememberLineCartesianLayer(
                lineProvider = LineCartesianLayer.LineProvider.series(
                    LineCartesianLayer.rememberLine(
+                       // Cambia el color de la línea
                        fill =  LineCartesianLayer.LineFill.single(fill(Color(0xFFB8E39B )))
                    )
                )
@@ -62,6 +60,7 @@ private fun JetpackComposeBasicLineChart(
             bottomAxis = HorizontalAxis.rememberBottom(
                 label = rememberAxisLabelComponent(color = Color.White),
                 valueFormatter = { _, value, _ ->
+                    // Establece los labels para el eje X
                     repeatedDays.getOrNull(value.toInt() - 1) ?: ""
                 }
             ),
@@ -84,14 +83,17 @@ fun JetpackComposeBasicLineChart(modifier: Modifier = Modifier) {
     val randomYValues = remember { mutableStateOf(List(16) { (0..20).random() }) }
 
 
-    // 3. Numeric X-values (1, 2, 3, ...)
+    // 1,2,3,4,...
     val xValues = (1..16).map { it.toFloat() }
 
     // Se ejecuta al inicio
     LaunchedEffect(Unit) {
         while (true) {
-            delay(5000)
-            randomYValues.value = List(16) { (0..20).random() }
+            delay(2000)
+            randomYValues.value = List(16) { index ->
+                // El primer elemento siempre es 15
+                if (index == 0) 15 else (10..20).random()
+            }
         }
     }
     // Se ejecuta cada vez que randomYValues cambia

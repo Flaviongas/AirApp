@@ -32,8 +32,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (String) -> Unit) {
 
-    val txtFieldError = remember { mutableStateOf("") }
-    val txtField = remember { mutableStateOf(value) }
+    val txtFieldError = remember { mutableStateOf("") } // En caso de error
+    val txtField = remember { mutableStateOf(value) } // Campo de texto
     val context = LocalContext.current                     // Contexto actual
     val userPreferences = remember { UserData(context) } // Instancia de UserPreferences
     val scope = rememberCoroutineScope()                   // Para lanzar corrutinas
@@ -86,8 +86,8 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                             .fillMaxWidth(),
                         placeholder = { Text(text = "Claudito") },
                         value = txtField.value,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                         onValueChange = {
+                            // Toma los 10 primeros carácteres
                             txtField.value = it.take(10)
                         })
 
@@ -96,12 +96,14 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                     Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                         Button(
                             onClick = {
+                                // Para evitar valores nulos
                                 if (txtField.value.isEmpty()) {
                                     txtFieldError.value = "Ingrese un nombre"
                                     return@Button
                                 }
                                 scope.launch {
-                                    userPreferences.saveName(txtField.value) // Guardamos el nombre
+                                    // Guarda el nombre en userPreferences
+                                    userPreferences.saveName(txtField.value)
                                 }
                                 setShowDialog(false)
                             },

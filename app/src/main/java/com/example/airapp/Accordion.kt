@@ -31,24 +31,27 @@ fun Accordion(
     index: Int,
     states: SnapshotStateList<Boolean>
 ) {
+    // Saber cual acordión se abrió
     val expanded = states[index]
+
+    // Para rotar flecha al abrir acordión
     val arrowRotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         label = "accordion-arrow"
     )
 
     Surface(
-        color = MaterialTheme.colorScheme.surfaceDim,
+        color = MaterialTheme.colorScheme.surfaceDim.copy(alpha=0.6f),
         modifier = modifier.padding(vertical = 13.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable {
+                // Cerrar los demás acordiones cuando se abre uno
                 for (i in states.indices) if(i!=index)states[i] = false
                 states[index] = !states[index]
             }
 
     ) {
         Column {
-            // accordion header
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -70,15 +73,13 @@ fun Accordion(
                     modifier = Modifier.rotate(arrowRotation)
                 )
             }
-
+            // Animaciones para abrir y cerrar acordión
             AnimatedVisibility(
                 visible = expanded,
-                // animate expand vertically from the top when expanded + fade in
                 enter = expandVertically(
                     expandFrom = Alignment.Top,
                     animationSpec = tween()
                 ) + fadeIn(),
-                // animate shrink vertically to the top when collapsed + fade out
                 exit = shrinkVertically(
                     shrinkTowards = Alignment.Top,
                     animationSpec = tween()

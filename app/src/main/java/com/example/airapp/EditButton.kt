@@ -15,7 +15,7 @@ fun TransparentEditButton(onClick: () -> Unit) {
         modifier = Modifier.background(Color.Transparent)
     ) {
         Icon(
-            imageVector = Icons.Default.Edit,
+            imageVector = Icons.Default.Edit, // Ícono de lápiz
             contentDescription = "Ingresa tu nombre",
             tint = Color.Gray 
         )

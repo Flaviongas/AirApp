@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,7 +37,7 @@ fun DaysBody(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        "Universidad, Autónoma",
+                        "Universidad Autónoma",
                         color = Color.White
                     )
                 },
@@ -59,6 +61,7 @@ fun DaysBody(navController: NavController) {
                     .padding(16.dp)
             ) {
                 MainWeatherInfo(reduced = true)
+                // Arreglo para mantener registro de acordiones abiertos
                 val states = remember{ mutableStateListOf(false,false,false) }
                 Accordion(
                     day = "Lunes, Mar 22",
@@ -72,7 +75,7 @@ fun DaysBody(navController: NavController) {
                     weather = "Nublado",
                     emoji = "☁️",
                     index = 1,
-                            states = states
+                    states = states
                 )
 
                 Accordion(
@@ -80,7 +83,7 @@ fun DaysBody(navController: NavController) {
                     weather = "Lluvia ligera",
                     emoji = "🌧️",
                     index = 2,
-                            states = states
+                    states = states
                 )
 
 
@@ -92,7 +95,17 @@ fun DaysBody(navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        Button(onClick ={navController.navigate("Home")} ) { Text(text = "Volver al Inicio") }
+                        Button(
+                            onClick = { navController.navigate("Home") },
+                            shape = RoundedCornerShape(28.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFB8E39B),
+                                contentColor = Color.Black
+                            ),
+                            modifier = Modifier.padding(4.dp)
+                        ) {
+                            Text("Volver al Inicio")
+                        }
                     }
                 }
 

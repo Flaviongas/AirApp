@@ -21,7 +21,9 @@ fun PrettyBar(hour:String,particles:String,progress:Float) {
 
         LinearProgressIndicator(
             progress = { progress },
+            // Eliminar separación de barras
             gapSize = -15.dp,
+            // Eliminar punto para indicar porcentaje
             drawStopIndicator = {},
             modifier = Modifier
                 .height(17.dp)

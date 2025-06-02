@@ -41,10 +41,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+
+// Definir la familia de fuentes Poppins
+val poppinsFamily = FontFamily(
+    Font(R.font.poppins_regular, FontWeight.Normal) // peso 400
+)
+
+// Color constante para todos los textos
+val textColor = Color(0xFF1E1B1B)
 
 // "Objeto" para mantener estructura
 data class WeatherData(
@@ -61,24 +71,26 @@ data class WeatherData(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreen(navController: NavController) {
-   // Esto representa la pantalla principal del prototipo físico
-
     val selectedTab = remember { mutableIntStateOf(0) }
-    val showDialog =  remember { mutableStateOf(false) }
-    if(showDialog.value)
+    val showDialog = remember { mutableStateOf(false) }
+
+    if(showDialog.value) {
         CustomDialog(value = "", setShowDialog = {
             showDialog.value = it
         }) {
-            Log.i("HomePage","HomePage : $it")
+            Log.i("HomePage", "HomePage: $it")
         }
+    }
+
     Scaffold(
         topBar = {
-            // Barra superior
             TopAppBar(
                 title = {
                     Text(
                         "Universidad Autónoma",
-                        color = Color.White
+                        color = textColor,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Normal
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -86,47 +98,43 @@ fun WeatherScreen(navController: NavController) {
                 )
             )
         },
-        containerColor = Color(0xFF2B5D70) // Color azul oscuro como fondo
     ) { paddingValues ->
-        // Overlay para mejorar la legibilidad
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color.Black.copy(alpha = 0.4f))
         ) {
-            // Contenido principal
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                val context = LocalContext.current                     // Contexto actual
-                val userPreferences = remember { UserData(context) } // Instancia de UserPreferences
-                var savedName by remember { mutableStateOf("") }       // Nombre leído de DataStore
+                val context = LocalContext.current
+                val userPreferences = remember { UserData(context) }
+                var savedName by remember { mutableStateOf("") }
 
-                // Al iniciar, leer el nombre guardado
                 LaunchedEffect(Unit) {
                     userPreferences.getName.collect { name ->
                         savedName = name
                     }
                 }
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         "Bienvenid@, $savedName",
-                        color = Color.White,
+                        color = textColor,
                         fontSize = 20.sp,
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Normal
                     )
                     TransparentEditButton(onClick = { showDialog.value = true })
-
                 }
-                // Widget de tiempo con menos info
-                MainWeatherInfo(reduced=false)
+
+                MainWeatherInfo(reduced = false)
 
                 Spacer(modifier = Modifier.height(16.dp))
-                // Seleccionar día para ver datos
-                DaySelector(selectedTab.value,
-                    onTabSelected = {selectedTab.value = it})
+
+                DaySelector(selectedTab.value) { selectedTab.value = it }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -151,41 +159,46 @@ fun MainWeatherInfo(reduced: Boolean) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Temperatura principal y sensación térmica
         Column {
             Text(
                 text = "3°",
-                color = Color.White,
+                color = textColor,
                 fontSize = 80.sp,
+                fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Light
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Sensación",
-                    color = Color.White,
-                    fontSize = 16.sp
+                    color = textColor,
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal
                 )
 
                 Text(
                     text = " -2°",
-                    color = Color.White,
-                    fontSize = 16.sp
+                    color = textColor,
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            if(!reduced){
 
-            Text(
-                text = "Marzo 28, 17:08",
-                color = Color.White,
-                fontSize = 16.sp
-            )
+            if(!reduced) {
+                Text(
+                    text = "Marzo 28, 17:08",
+                    color = textColor,
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal
+                )
             }
         }
 
-        // Estado del tiempo con gato asomándose
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -199,7 +212,6 @@ fun MainWeatherInfo(reduced: Boolean) {
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Icono de nube parcialmente cubriendo el sol
                     Box(
                         modifier = Modifier
                             .size(56.dp)
@@ -211,13 +223,11 @@ fun MainWeatherInfo(reduced: Boolean) {
                     )
                 }
 
-                // Gato asomándose
                 Box(
                     modifier = Modifier
                         .offset(y = (-20).dp)
                         .size(40.dp)
                 ) {
-                    // Orejas del gato
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
@@ -238,7 +248,6 @@ fun MainWeatherInfo(reduced: Boolean) {
                         )
                     }
 
-                    // Cara del gato
                     Box(
                         modifier = Modifier
                             .offset(y = 6.dp)
@@ -246,7 +255,6 @@ fun MainWeatherInfo(reduced: Boolean) {
                             .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                             .background(Color.Black)
                     ) {
-                        // Ojos del gato
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -274,26 +282,29 @@ fun MainWeatherInfo(reduced: Boolean) {
 
             Text(
                 text = "Nublado",
-                color = Color.White,
-                fontSize = 16.sp
+                color = textColor,
+                fontSize = 16.sp,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Normal
             )
-            if(!reduced){
 
-            Text(
-                text = "Max 3° Min -1°",
-                color = Color.White,
-                fontSize = 14.sp
-            )
+            if(!reduced) {
+                Text(
+                    text = "Max 3° Min -1°",
+                    color = textColor,
+                    fontSize = 14.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal
+                )
             }
         }
     }
 }
 
 @Composable
-fun DaySelector(selectedTab:Int, onTabSelected: (Int)-> Unit) {
-    val tabs = listOf("Hoy", "Mañana", "Pasado Mañana")
+fun DaySelector(selectedTab: Int, onTabSelected: (Int) -> Unit) {
+    val tabs = listOf("Hoy", "Mañana", "10 Días")
 
-    // Tab custom personalizado con estilo de la UI mostrada
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -309,15 +320,15 @@ fun DaySelector(selectedTab:Int, onTabSelected: (Int)-> Unit) {
                     .fillMaxHeight()
                     .padding(4.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    // Pinta de verde la pestaña seleccionada
                     .background(if (selectedTab == index) Color(0xFFB8E39B) else Color.Transparent)
-                    .clickable {  onTabSelected(index) },
+                    .clickable { onTabSelected(index) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = title,
-                    color = if (selectedTab == index) Color.Black else Color.White,
-                    fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
+                    color = if (selectedTab == index) Color.Black else textColor,
+                    fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal,
+                    fontFamily = poppinsFamily
                 )
             }
         }
@@ -326,24 +337,21 @@ fun DaySelector(selectedTab:Int, onTabSelected: (Int)-> Unit) {
 
 @Composable
 fun WeatherMetrics(selectedTab: Int) {
-
-    // Datos para Hoy, Mañana y Pasado Mañana
     val weatherDays = listOf(
         WeatherData(
             "ica 22", "412 ppm", "715 hpa", "18°C",
             "Moderado", "Regular", "↓ 15 hpa", "↓ 1.2°C"
         ),
-
         WeatherData(
             "ica 15", "388 ppm", "735 hpa", "5°C",
             "Excelente", "Bueno", "↑ 8 hpa", "↑ 2.5°C"
         ),
-
         WeatherData(
             "ica 08", "405 ppm", "710 hpa", "-2°C",
             "Bueno", "Moderado", "↓ 25 hpa", "↓ 3.1°C"
         )
     )
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -403,8 +411,7 @@ fun WeatherMetricCardSimple(
     black: Boolean = false
 ) {
     Card(
-        modifier = modifier
-            .height(90.dp),
+        modifier = modifier.height(90.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White.copy(alpha = 0.2f)
         ),
@@ -428,8 +435,10 @@ fun WeatherMetricCardSimple(
 
                 Text(
                     text = title,
-                    color = if(black) Color.Black else Color.White,
-                    fontSize = 14.sp
+                    color = if(black) Color.Black else textColor,
+                    fontSize = 14.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal
                 )
             }
 
@@ -442,15 +451,18 @@ fun WeatherMetricCardSimple(
             ) {
                 Text(
                     text = value,
-                    color = if(black) Color.Black else Color.White,
+                    color = if(black) Color.Black else textColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = poppinsFamily
                 )
 
                 Text(
                     text = status,
-                    color = if (status.startsWith("↑")) Color.Red else if(black)Color.Black else Color.White,
-                    fontSize = 14.sp
+                    color = if (status.startsWith("↑")) Color.Red else if(black) Color.Black else textColor,
+                    fontSize = 14.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Normal
                 )
             }
         }
@@ -464,9 +476,10 @@ fun HourlyForecast() {
     ) {
         Text(
             text = "Tiempo de hoy",
-            color = Color.White,
+            color = textColor,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
+            fontFamily = poppinsFamily,
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
@@ -489,7 +502,6 @@ fun HourlyForecast() {
     }
 }
 
-// Objeto para tener todo en una misma estructura
 data class HourlyWeather(
     val hour: String,
     val temp: Int,
@@ -503,8 +515,10 @@ fun HourlyWeatherItem(data: HourlyWeather) {
     ) {
         Text(
             text = data.hour,
-            color = Color.White,
-            fontSize = 14.sp
+            color = textColor,
+            fontSize = 14.sp,
+            fontFamily = poppinsFamily,
+            fontWeight = FontWeight.Normal
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -528,9 +542,10 @@ fun HourlyWeatherItem(data: HourlyWeather) {
 
         Text(
             text = "${data.temp}°",
-            color = Color.White,
+            color = textColor,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            fontFamily = poppinsFamily
         )
     }
 }
@@ -543,7 +558,7 @@ fun NavButtons(navController: NavController) {
             .padding(top = 16.dp),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         Button(
             onClick = { navController.navigate("Plots") },
             shape = RoundedCornerShape(28.dp),
@@ -553,7 +568,12 @@ fun NavButtons(navController: NavController) {
             ),
             modifier = Modifier.padding(4.dp)
         ) {
-            Text("Ver gráficos")
+            Text(
+                "Ver gráficos",
+                color = textColor,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Normal
+            )
         }
 
         Button(
@@ -565,7 +585,12 @@ fun NavButtons(navController: NavController) {
             ),
             modifier = Modifier.padding(4.dp)
         ) {
-            Text("Análisis por día")
+            Text(
+                "Análisis por día",
+                color = textColor,
+                fontFamily = poppinsFamily,
+                fontWeight = FontWeight.Normal
+            )
         }
     }
 }

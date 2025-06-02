@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun PrettyBar(hour:String,particles:String,progress:Float) {
     Row(modifier = Modifier.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(hour, color = Color.White, modifier = Modifier.padding(horizontal = 2.dp))
+        Text(hour, color = Color(0xFF1E1B1B), modifier = Modifier.padding(horizontal = 2.dp))
 
         LinearProgressIndicator(
             progress = { progress },
@@ -34,7 +34,7 @@ fun PrettyBar(hour:String,particles:String,progress:Float) {
         )
         Text(
             particles,
-            color = Color.White,
+            color = Color(0xFF1E1B1B),
             fontSize = 12.sp,
             modifier = Modifier.padding(horizontal = 1.dp)
         )

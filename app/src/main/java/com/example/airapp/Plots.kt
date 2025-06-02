@@ -1,5 +1,7 @@
 package com.example.airapp
 
+import MainWeatherInfo
+import WeatherMetricCardSimple
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,8 +22,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -36,184 +38,205 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun Plots(navController: NavController){
+fun Plots(navController: NavController) {
     NavBar(navController)
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavBar(navController: NavController) {
-    // Esto representa la pantalla secundaria del prototipo físico (la que estaba al reverso)
+    // Definiciones de variables de estilo (ajusta según tus necesidades)
+    val poppinsFamily = FontFamily.Default
+    val textColor = Color.Black
 
-    // Establecer valores iniciales de la barra
     val barsValues = remember { mutableStateOf(List(4) { (4..8).random() }) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            // Actualizar los valores de las barras cada 2 segundos
-            delay(2000)
-            barsValues.value = List(4) { (4..8).random() }
-        }
-    }
     val animatedBars = remember {
         List(4) { index ->
-            // Meter datos objeto animable
             Animatable(barsValues.value[index].toFloat() / 10)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(2000)
+            barsValues.value = List(4) { (4..8).random() }
         }
     }
 
     LaunchedEffect(barsValues.value) {
         barsValues.value.forEachIndexed { index, newValue ->
             launch {
-                // Animar transición de cada barra
                 animatedBars[index].animateTo(newValue.toFloat() / 10)
             }
         }
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Universidad Autónoma",
-                        color = Color.White
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
-            )
-        },
-        containerColor = Color(0xFF2B5D70) // Color azul oscuro como fondo
+        modifier = Modifier.background(Color(0xFFF5F5F5))
     ) { paddingValues ->
-        // Overlay para mejorar la legibilidad
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color.Black.copy(alpha = 0.4f))
+                .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
-            Column(
+            MainWeatherInfo(reduced = true)
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Gráfico de temperatura
+            Card(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .height(200.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White.copy(alpha = 0.8f)
+                ),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                MainWeatherInfo(reduced = true)
-
-                Card(
+                Column(
                     modifier = Modifier
-                        .height(180.dp).padding(vertical =10.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White.copy(alpha = 0.2f)
-                    ),
-                    shape = RoundedCornerShape(16.dp)
+                        .fillMaxSize()
+                        .padding(16.dp)
                 ) {
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "\uD83D\uDCC5",
-                            fontSize = 16.sp,
-                            modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                            text = "📅",
+                            fontSize = 20.sp,
+                            fontFamily = poppinsFamily
                         )
 
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
 
                         Text(
                             text = "Predicción de temperatura",
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                            color = textColor,
+                            fontSize = 16.sp,
+                            fontFamily = poppinsFamily,
+                            fontWeight = FontWeight.Medium
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     JetpackComposeBasicLineChart()
                 }
-
-                Card(
-                    modifier = Modifier
-                        .height(190.dp).padding(vertical =10.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White.copy(alpha = 0.2f)
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(12.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "☁\uFE0F",
-                                    fontSize = 16.sp,
-                                            modifier = Modifier.padding(bottom = 10.dp)
-                                )
-
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                Text(
-                                    text = "Porcentaje de C02 hoy",
-                                    color = Color.White,
-                                    fontSize = 14.sp,
-                                    modifier = Modifier.padding(bottom = 10.dp)
-                                )
-                            }
-                                    PrettyBar("6 PM","${(animatedBars[0].value*700).toInt()} ppm",animatedBars[0].value)
-                            PrettyBar("7 PM","${(animatedBars[1].value*700).toInt()} ppm",animatedBars[1].value)
-                            PrettyBar("8 PM","${(animatedBars[2].value*700).toInt()} ppm",animatedBars[2].value)
-                            PrettyBar("9 PM","${(animatedBars[3].value*700).toInt()} ppm",animatedBars[3].value)
-
-                            }
-}
-
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    WeatherMetricCardSimple(
-                        title = "Alerta CO2",
-                        value = "653 ppm",
-                        status = "4h atrás",
-                        icon = "\uD83D\uDCA8",
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    WeatherMetricCardSimple(
-                        title = "Alerta Tem",
-                        value = "40 °C",
-                        status = "15h atrás",
-                        icon = "\uD83D\uDCA8",
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Button(
-                            onClick = { navController.navigate("Home") },
-                            shape = RoundedCornerShape(28.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFB8E39B),
-                                contentColor = Color.Black
-                            ),
-                            modifier = Modifier.padding(4.dp)
-                        ) {
-                            Text("Volver al Inicio")
-                        }
-                    }
-                }
-
             }
-        }}
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Gráfico de barras de CO2
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White.copy(alpha = 0.8f)
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "☁️",
+                            fontSize = 20.sp,
+                            fontFamily = poppinsFamily
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Text(
+                            text = "Niveles de CO2 hoy",
+                            color = textColor,
+                            fontSize = 16.sp,
+                            fontFamily = poppinsFamily,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Barras de CO2
+                    PrettyBar(
+                        "6 PM",
+                        "${(animatedBars[0].value*700).toInt()} ppm",
+                        animatedBars[0].value
+                    )
+                    PrettyBar(
+                        "7 PM",
+                        "${(animatedBars[1].value*700).toInt()} ppm",
+                        animatedBars[1].value
+                    )
+                    PrettyBar(
+                        "8 PM",
+                        "${(animatedBars[2].value*700).toInt()} ppm",
+                        animatedBars[2].value
+                    )
+                    PrettyBar(
+                        "9 PM",
+                        "${(animatedBars[3].value*700).toInt()} ppm",
+                        animatedBars[3].value
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Alertas
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                WeatherMetricCardSimple(
+                    title = "Alerta CO2",
+                    value = "653 ppm",
+                    status = "4h atrás",
+                    icon = "💨",
+                    modifier = Modifier.weight(1f),
+                    black = true
+                )
+
+                WeatherMetricCardSimple(
+                    title = "Alerta Temp",
+                    value = "40 °C",
+                    status = "15h atrás",
+                    icon = "🌡️",
+                    modifier = Modifier.weight(1f),
+                    black = true
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Botón de volver
+            Button(
+                onClick = { navController.navigate("Home") },
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFB8E39B),
+                    contentColor = Color.Black
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                Text(
+                    "Volver al Inicio",
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
 }
-
-

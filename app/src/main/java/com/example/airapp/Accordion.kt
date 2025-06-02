@@ -1,4 +1,5 @@
 package com.example.airapp
+import WeatherMetricCardSimple
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -18,9 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+
+
 
 @Composable
 fun Accordion(
@@ -43,13 +48,12 @@ fun Accordion(
     Surface(
         color = MaterialTheme.colorScheme.surfaceDim.copy(alpha=0.6f),
         modifier = modifier.padding(vertical = 13.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp)) // Aumenté el radio de las esquinas
             .clickable {
                 // Cerrar los demás acordiones cuando se abre uno
                 for (i in states.indices) if(i!=index)states[i] = false
                 states[index] = !states[index]
             }
-
     ) {
         Column {
             Row(
@@ -58,21 +62,37 @@ fun Accordion(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 Column {
-                Text(day,
-                        fontWeight = FontWeight.Bold,
-                )
-                    Text(weather)
-                }
-                Spacer(modifier= Modifier.weight(2.8f))
-                Text(emoji , fontSize = 30.sp,
-                    modifier = Modifier.weight(1f),
+                    Text(
+                        text = day,
+                        color = textColor,
+                        fontSize = 20.sp, // Tamaño aumentado
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Bold
                     )
+                    Text(
+                        text = weather,
+                        color = textColor.copy(alpha = 0.8f),
+                        fontSize = 16.sp, // Tamaño aumentado
+                        fontFamily = poppinsFamily,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = emoji,
+                    fontSize = 36.sp, // Tamaño aumentado
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 Icon(
                     imageVector = Icons.Filled.ArrowDropDown,
                     contentDescription = null,
-                    modifier = Modifier.rotate(arrowRotation)
+                    modifier = Modifier
+                        .size(28.dp) // Tamaño aumentado
+                        .rotate(arrowRotation),
+                    tint = textColor
                 )
             }
+
             // Animaciones para abrir y cerrar acordión
             AnimatedVisibility(
                 visible = expanded,
@@ -85,31 +105,37 @@ fun Accordion(
                     animationSpec = tween()
                 ) + fadeOut()
             ) {
-Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                Column(
+                    modifier = Modifier.padding(bottom = 16.dp)
                 ) {
-                    WeatherMetricCardSimple(
-                        title = "Alerta CO2",
-                        value = "653 ppm",
-                        status = "4h atrás",
-                        icon = "\uD83D\uDCA8",
-                        modifier = Modifier.weight(1f).padding(start = 15.dp),
-                        black = true
-                    )
-
-                    WeatherMetricCardSimple(
-                        title = "Alerta Tem",
-                        value = "40 °C",
-                        status = "15h atrás",
-                        icon = "\uD83D\uDCA8",
-                        modifier = Modifier.weight(1f).padding(end = 15.dp),
-                        black = true
-                    )
-                }
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        WeatherMetricCardSimple(
+                            title = "Alerta CO2",
+                            value = "653 ppm",
+                            status = "Alto",
+                            icon = "\uD83D\uDCA8",
+                            modifier = Modifier.weight(1f).padding(start = 16.dp),
+                            black = true
+                        )
+
+                        WeatherMetricCardSimple(
+                            title = "Alerta Tem",
+                            value = "40 °C",
+                            status = "15h atrás",
+                            icon = "\uD83D\uDCA8",
+                            modifier = Modifier.weight(1f).padding(end = 16.dp),
+                            black = true
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         WeatherMetricCardSimple(
@@ -117,8 +143,8 @@ Column {
                             value = "ica 45",
                             status = "Bueno",
                             icon = "💨",
-                            modifier = Modifier.weight(1f).padding(start = 15.dp),
-                            black= true
+                            modifier = Modifier.weight(1f).padding(start = 16.dp),
+                            black = true
                         )
 
                         WeatherMetricCardSimple(
@@ -126,12 +152,12 @@ Column {
                             value = "400ppm",
                             status = "Bueno",
                             icon = "🌫️",
-                            modifier = Modifier.weight(1f).padding(end = 15.dp),
-                            black= true
+                            modifier = Modifier.weight(1f).padding(end = 16.dp),
+                            black = true
                         )
                     }
-                }
                 }
             }
         }
     }
+}

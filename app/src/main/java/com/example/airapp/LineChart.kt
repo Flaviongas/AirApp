@@ -56,9 +56,9 @@ private fun JetpackComposeBasicLineChart(
                    )
                )
             ),
-            startAxis = VerticalAxis.rememberStart(label = rememberAxisLabelComponent(color= Color.White)),
+            startAxis = VerticalAxis.rememberStart(label = rememberAxisLabelComponent(color= Color(0xFF1E1B1B))),
             bottomAxis = HorizontalAxis.rememberBottom(
-                label = rememberAxisLabelComponent(color = Color.White),
+                label = rememberAxisLabelComponent(color = Color(0xFF1E1B1B)),
                 valueFormatter = { _, value, _ ->
                     // Establece los labels para el eje X
                     repeatedDays.getOrNull(value.toInt() - 1) ?: ""

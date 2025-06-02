@@ -1,5 +1,3 @@
-package com.example.airapp
-
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,8 +25,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,10 +43,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.airapp.CustomDialog
+import com.example.airapp.R
+import com.example.airapp.TransparentEditButton
+import com.example.airapp.UserData
 
 // Definir la familia de fuentes Poppins
 val poppinsFamily = FontFamily(
-    Font(R.font.poppins_regular, FontWeight.Normal) // peso 400
+    Font(R.font.poppins_regular, FontWeight.Normal)
 )
 
 // Color constante para todos los textos
@@ -82,23 +82,7 @@ fun WeatherScreen(navController: NavController) {
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Universidad Autónoma",
-                        color = textColor,
-                        fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.Normal
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
-            )
-        },
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -107,7 +91,7 @@ fun WeatherScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
                 val context = LocalContext.current
                 val userPreferences = remember { UserData(context) }
@@ -119,30 +103,35 @@ fun WeatherScreen(navController: NavController) {
                     }
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                ) {
                     Text(
                         "Bienvenid@, $savedName",
                         color = textColor,
-                        fontSize = 20.sp,
+                        fontSize = 22.sp,
                         fontFamily = poppinsFamily,
-                        fontWeight = FontWeight.Normal
+                        fontWeight = FontWeight.Medium
                     )
                     TransparentEditButton(onClick = { showDialog.value = true })
                 }
 
                 MainWeatherInfo(reduced = false)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 DaySelector(selectedTab.value) { selectedTab.value = it }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 WeatherMetrics(selectedTab.value)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 HourlyForecast()
+
+                Spacer(modifier = Modifier.height(24.dp))
 
                 NavButtons(navController)
             }
@@ -155,7 +144,7 @@ fun MainWeatherInfo(reduced: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
+            .padding(top = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -163,7 +152,7 @@ fun MainWeatherInfo(reduced: Boolean) {
             Text(
                 text = "3°",
                 color = textColor,
-                fontSize = 80.sp,
+                fontSize = 72.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Light
             )
@@ -172,7 +161,7 @@ fun MainWeatherInfo(reduced: Boolean) {
                 Text(
                     text = "Sensación",
                     color = textColor,
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal
                 )
@@ -180,7 +169,7 @@ fun MainWeatherInfo(reduced: Boolean) {
                 Text(
                     text = " -2°",
                     color = textColor,
-                    fontSize = 16.sp,
+                    fontSize = 18.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal
                 )
@@ -205,7 +194,7 @@ fun MainWeatherInfo(reduced: Boolean) {
             Box(contentAlignment = Alignment.TopCenter) {
                 Box(
                     modifier = Modifier
-                        .size(64.dp)
+                        .size(80.dp)
                         .background(
                             color = Color(0xFFFFB300),
                             shape = CircleShape
@@ -214,8 +203,8 @@ fun MainWeatherInfo(reduced: Boolean) {
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(56.dp)
-                            .offset(x = 4.dp, y = 4.dp)
+                            .size(70.dp)
+                            .offset(x = 6.dp, y = 6.dp)
                             .background(
                                 color = Color.White.copy(alpha = 0.5f),
                                 shape = CircleShape
@@ -225,8 +214,8 @@ fun MainWeatherInfo(reduced: Boolean) {
 
                 Box(
                     modifier = Modifier
-                        .offset(y = (-20).dp)
-                        .size(40.dp)
+                        .offset(y = (-24).dp)
+                        .size(48.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -234,15 +223,15 @@ fun MainWeatherInfo(reduced: Boolean) {
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(12.dp)
-                                .offset(x = (-5).dp)
+                                .size(14.dp)
+                                .offset(x = (-6).dp)
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                 .background(Color.Black)
                         )
                         Box(
                             modifier = Modifier
-                                .size(12.dp)
-                                .offset(x = 5.dp)
+                                .size(14.dp)
+                                .offset(x = 6.dp)
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                 .background(Color.Black)
                         )
@@ -250,27 +239,27 @@ fun MainWeatherInfo(reduced: Boolean) {
 
                     Box(
                         modifier = Modifier
-                            .offset(y = 6.dp)
-                            .size(34.dp)
+                            .offset(y = 8.dp)
+                            .size(40.dp)
                             .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                             .background(Color.Black)
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 10.dp),
+                                .padding(top = 12.dp),
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(6.dp)
-                                    .offset(x = (-5).dp)
+                                    .size(8.dp)
+                                    .offset(x = (-6).dp)
                                     .background(Color.Yellow, CircleShape)
                             )
                             Box(
                                 modifier = Modifier
-                                    .size(6.dp)
-                                    .offset(x = 5.dp)
+                                    .size(8.dp)
+                                    .offset(x = 6.dp)
                                     .background(Color.Yellow, CircleShape)
                             )
                         }
@@ -283,7 +272,7 @@ fun MainWeatherInfo(reduced: Boolean) {
             Text(
                 text = "Nublado",
                 color = textColor,
-                fontSize = 16.sp,
+                fontSize = 18.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Normal
             )
@@ -292,7 +281,7 @@ fun MainWeatherInfo(reduced: Boolean) {
                 Text(
                     text = "Max 3° Min -1°",
                     color = textColor,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontFamily = poppinsFamily,
                     fontWeight = FontWeight.Normal
                 )
@@ -308,8 +297,8 @@ fun DaySelector(selectedTab: Int, onTabSelected: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .height(48.dp)
+            .clip(RoundedCornerShape(24.dp))
             .background(Color.White.copy(alpha = 0.2f)),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -319,7 +308,7 @@ fun DaySelector(selectedTab: Int, onTabSelected: (Int) -> Unit) {
                     .weight(1f)
                     .fillMaxHeight()
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(14.dp))
                     .background(if (selectedTab == index) Color(0xFFB8E39B) else Color.Transparent)
                     .clickable { onTabSelected(index) },
                 contentAlignment = Alignment.Center
@@ -327,7 +316,7 @@ fun DaySelector(selectedTab: Int, onTabSelected: (Int) -> Unit) {
                 Text(
                     text = title,
                     color = if (selectedTab == index) Color.Black else textColor,
-                    fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal,
+                    fontSize = 16.sp,
                     fontFamily = poppinsFamily
                 )
             }
@@ -411,7 +400,7 @@ fun WeatherMetricCardSimple(
     black: Boolean = false
 ) {
     Card(
-        modifier = modifier.height(90.dp),
+        modifier = modifier.height(110.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White.copy(alpha = 0.2f)
         ),
@@ -420,7 +409,7 @@ fun WeatherMetricCardSimple(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp)
+                .padding(16.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -428,10 +417,10 @@ fun WeatherMetricCardSimple(
             ) {
                 Text(
                     text = icon,
-                    fontSize = 16.sp
+                    fontSize = 20.sp
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
                     text = title,
@@ -477,7 +466,7 @@ fun HourlyForecast() {
         Text(
             text = "Tiempo de hoy",
             color = textColor,
-            fontSize = 16.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = poppinsFamily,
             modifier = Modifier.padding(vertical = 8.dp)
@@ -511,12 +500,13 @@ data class HourlyWeather(
 @Composable
 fun HourlyWeatherItem(data: HourlyWeather) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(60.dp)
     ) {
         Text(
             text = data.hour,
             color = textColor,
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             fontFamily = poppinsFamily,
             fontWeight = FontWeight.Normal
         )
@@ -525,7 +515,7 @@ fun HourlyWeatherItem(data: HourlyWeather) {
 
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(48.dp)
                 .background(
                     color = Color(0xFFFFB300),
                     shape = CircleShape
@@ -534,7 +524,7 @@ fun HourlyWeatherItem(data: HourlyWeather) {
         ) {
             Text(
                 text = data.icon,
-                fontSize = 20.sp
+                fontSize = 24.sp
             )
         }
 
@@ -543,7 +533,7 @@ fun HourlyWeatherItem(data: HourlyWeather) {
         Text(
             text = "${data.temp}°",
             color = textColor,
-            fontSize = 16.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = poppinsFamily
         )
@@ -556,21 +546,25 @@ fun NavButtons(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
             onClick = { navController.navigate("Plots") },
-            shape = RoundedCornerShape(28.dp),
+            shape = RoundedCornerShape(18.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFB8E39B),
                 contentColor = Color.Black
             ),
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier
+                .padding(4.dp)
+                .height(48.dp)
+                .width(160.dp)
         ) {
             Text(
                 "Ver gráficos",
                 color = textColor,
+                fontSize = 16.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Normal
             )
@@ -578,16 +572,20 @@ fun NavButtons(navController: NavController) {
 
         Button(
             onClick = { navController.navigate("Days") },
-            shape = RoundedCornerShape(28.dp),
+            shape = RoundedCornerShape(18.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFB8E39B),
                 contentColor = Color.Black
             ),
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier
+                .padding(4.dp)
+                .height(48.dp)
+                .width(160.dp)
         ) {
             Text(
-                "Análisis por día",
+                "Análisis diario",
                 color = textColor,
+                fontSize = 16.sp,
                 fontFamily = poppinsFamily,
                 fontWeight = FontWeight.Normal
             )

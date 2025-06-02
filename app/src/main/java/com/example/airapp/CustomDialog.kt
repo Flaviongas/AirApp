@@ -84,7 +84,7 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                     TextField(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        placeholder = { Text(text = "Claudito") },
+                        placeholder = { Text(text = "Flaviopal") },
                         value = txtField.value,
                         onValueChange = {
                             // Toma los 10 primeros carácteres

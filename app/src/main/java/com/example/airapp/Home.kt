@@ -328,7 +328,7 @@ fun DaySelector(selectedTab: Int, onTabSelected: (Int) -> Unit) {
                     .fillMaxHeight()
                     .padding(4.dp)
                     .clip(RoundedCornerShape(14.dp))
-                    .background(if (selectedTab == index) Color(0xFFB8E39B) else Color.White.copy(alpha = 0.8f)) // Cambio: fondo blanco para no seleccionados
+                    .background(if (selectedTab == index) Color(0xFFB8E39B) else Color.White.copy(alpha = 0.8f))
                     .clickable { onTabSelected(index) },
                 contentAlignment = Alignment.Center
             ) {
@@ -380,7 +380,7 @@ fun WeatherMetrics(selectedTab: Int) {
                     )
                 },
                 modifier = Modifier.weight(1f),
-                useWhiteBackground = true // Cambio: usar fondo blanco
+                useWhiteBackground = true
             )
 
             WeatherMetricCardSimple(
@@ -396,7 +396,7 @@ fun WeatherMetrics(selectedTab: Int) {
                     )
                 },
                 modifier = Modifier.weight(1f),
-                useWhiteBackground = true // Cambio: usar fondo blanco
+                useWhiteBackground = true
             )
         }
 
@@ -419,7 +419,7 @@ fun WeatherMetrics(selectedTab: Int) {
                     )
                 },
                 modifier = Modifier.weight(1f),
-                useWhiteBackground = true // Cambio: usar fondo blanco
+                useWhiteBackground = true
             )
 
             WeatherMetricCardSimple(
@@ -435,7 +435,7 @@ fun WeatherMetrics(selectedTab: Int) {
                     )
                 },
                 modifier = Modifier.weight(1f),
-                useWhiteBackground = true // Cambio: usar fondo blanco
+                useWhiteBackground = true
             )
         }
     }
@@ -450,13 +450,13 @@ fun WeatherMetricCardSimple(
     modifier: Modifier = Modifier,
     black: Boolean = false,
     useBlueBackground: Boolean = false,
-    useWhiteBackground: Boolean = false // Nuevo parámetro
+    useWhiteBackground: Boolean = false
 ) {
     Card(
         modifier = modifier.height(110.dp),
         colors = CardDefaults.cardColors(
             containerColor = when {
-                useWhiteBackground -> Color.White.copy(alpha = 0.8f) // Cambio: fondo blanco
+                useWhiteBackground -> Color.White.copy(alpha = 0.8f)
                 useBlueBackground -> Color(0xFF6B9AE8).copy(alpha = 0.15f)
                 else -> Color.White.copy(alpha = 0.2f)
             }
@@ -543,7 +543,7 @@ fun HourlyForecast() {
         )
 
         Surface(
-            color = Color.White.copy(alpha = 0.8f), // Cambio: fondo más blanco
+            color = Color.White.copy(alpha = 0.8f),
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.fillMaxWidth()
         ) {

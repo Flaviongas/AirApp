@@ -52,9 +52,9 @@ fun Accordion(
         // Nuevo color más moderno y elegante - un azul suave con transparencia
         color = Color(0xFF6B9AE8).copy(alpha = 0.15f),
         modifier = modifier.padding(vertical = 8.dp)
-            .clip(RoundedCornerShape(20.dp)) // Esquinas más redondeadas
+            .clip(RoundedCornerShape(20.dp))
             .clickable {
-                // Cerrar los demás acordiones cuando se abre uno
+
                 for (i in states.indices) if(i!=index)states[i] = false
                 states[index] = !states[index]
             }

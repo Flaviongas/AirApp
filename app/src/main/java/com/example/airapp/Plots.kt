@@ -273,7 +273,7 @@ fun NavBar(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Alertas con fondo blanco (modificado)
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -282,7 +282,7 @@ fun NavBar(navController: NavController) {
                         Card(
                             modifier = Modifier.weight(1f),
                             colors = CardDefaults.cardColors(
-                                containerColor = Color.White.copy(alpha = 0.8f) // Mismo fondo que los gráficos
+                                containerColor = Color.White.copy(alpha = 0.8f)
                             ),
                             shape = RoundedCornerShape(16.dp)
                         ) {
@@ -331,7 +331,7 @@ fun NavBar(navController: NavController) {
                         Card(
                             modifier = Modifier.weight(1f),
                             colors = CardDefaults.cardColors(
-                                containerColor = Color.White.copy(alpha = 0.8f) // Mismo fondo que los gráficos
+                                containerColor = Color.White.copy(alpha = 0.8f)
                             ),
                             shape = RoundedCornerShape(16.dp)
                         ) {

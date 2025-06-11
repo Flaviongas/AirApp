@@ -42,7 +42,7 @@ val poppinsFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal),
 )
 
-// Colores consistentes
+// Colores
 val backgroundColor = Color(0xFFF5F5F5)
 val cardColor = Color.White.copy(alpha = 0.8f)
 val primaryButtonColor = Color(0xFFB8E39B)
@@ -90,7 +90,7 @@ fun DaysBody(navController: NavController) {
                             )
                     )
 
-                    // Overlay oscuro opcional para mejorar legibilidad del texto
+                    // Overlay oscuro
                     Box(
                         modifier = Modifier
                             .fillMaxSize()

@@ -49,7 +49,6 @@ fun Accordion(
     )
 
     Surface(
-        // Nuevo color más moderno y elegante - un azul suave con transparencia
         color = Color(0xFF6B9AE8).copy(alpha = 0.15f),
         modifier = modifier.padding(vertical = 8.dp)
             .clip(RoundedCornerShape(20.dp))
@@ -82,7 +81,6 @@ fun Accordion(
                     )
                 }
 
-                // Reemplazar emoji con imagen PNG
                 Image(
                     painter = painterResource(id = iconResId),
                     contentDescription = "Weather icon",

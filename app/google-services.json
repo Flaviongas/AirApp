@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "550664087190",
+    "project_id": "air-app-95d45",
+    "storage_bucket": "air-app-95d45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550664087190:android:821192ca41f3ed426c44b7",
+        "android_client_info": {
+          "package_name": "com.example.airapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQhHCeZqH-2abO20GaUoIud4obi2xc68Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

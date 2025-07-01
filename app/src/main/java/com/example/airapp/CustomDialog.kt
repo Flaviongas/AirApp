@@ -32,11 +32,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (String) -> Unit) {
 
-    val txtFieldError = remember { mutableStateOf("") } // En caso de error
-    val txtField = remember { mutableStateOf(value) } // Campo de texto
-    val context = LocalContext.current                     // Contexto actual
-    val userPreferences = remember { UserData(context) } // Instancia de UserPreferences
-    val scope = rememberCoroutineScope()                   // Para lanzar corrutinas
+    val txtFieldError = remember { mutableStateOf("") }
+    val txtField = remember { mutableStateOf(value) }
+    val context = LocalContext.current
+    val userPreferences = remember { UserData(context) }
+    val scope = rememberCoroutineScope()
 
     // Al iniciar, leer el nombre guardado
     LaunchedEffect(Unit) {

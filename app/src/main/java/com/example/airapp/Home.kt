@@ -318,7 +318,7 @@ fun DaySelector(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             .fillMaxWidth()
             .height(48.dp)
             .clip(RoundedCornerShape(24.dp))
-            .background(Color.White.copy(alpha = 0.8f)), // Cambio: fondo más blanco
+            .background(Color.White.copy(alpha = 0.8f)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         tabs.forEachIndexed { index, title ->

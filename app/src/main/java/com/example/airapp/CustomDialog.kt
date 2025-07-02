@@ -1,14 +1,9 @@
 package com.example.airapp
-import android.R
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -18,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -26,25 +20,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.input.KeyboardType
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
+data class CurrentUser (
+    val email: String = "",
+    var username: String = ""
+)
+
 @Composable
-fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (String) -> Unit) {
+fun CustomDialog(
+    value: String,
+    setShowDialog: (Boolean) -> Unit,
+    current_user: CurrentUser?,
+    onUsernameChanged: (String) -> Unit
+) {
 
     val txtFieldError = remember { mutableStateOf("") }
     val txtField = remember { mutableStateOf(value) }
-    val context = LocalContext.current
-    val userPreferences = remember { UserData(context) }
     val scope = rememberCoroutineScope()
-
-    // Al iniciar, leer el nombre guardado
-    LaunchedEffect(Unit) {
-        userPreferences.getName.collect { name ->
-            txtField.value = name
-        }
-    }
-
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface(
             shape = RoundedCornerShape(16.dp),
@@ -61,7 +55,7 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Ingresa tu nombre",
+                            text = "Ingresa tu nuevo nombre de usuario",
                             style = TextStyle(
                                 fontSize = 24.sp,
                                 fontFamily = FontFamily.Default,
@@ -103,7 +97,9 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                                 }
                                 scope.launch {
                                     // Guarda el nombre en userPreferences
-                                    userPreferences.saveName(txtField.value)
+                                    changeUsername(current_user,txtField.value){
+                                        onUsernameChanged(txtField.value)
+                                    }
                                 }
                                 setShowDialog(false)
                             },
@@ -118,5 +114,32 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                 }
             }
         }
+    }
+}
+
+fun addUsername(user: CurrentUser?){
+    val db = FirebaseFirestore.getInstance()
+    if (user != null) {
+        db.collection("users")
+            .add(user)
+    }
+}
+fun changeUsername(user: CurrentUser?, value: String,onSuccess: () -> Unit = {} ) {
+    val db = FirebaseFirestore.getInstance()
+    if (user != null) {
+        db.collection("users").
+        whereEqualTo("email", user.email)
+            // Obtener documento del usuario actual, buscando por email
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val document = querySnapshot.documents.first()
+                // Actualizar username con el nuevo valor
+                document.reference.update("username", value)
+                    .addOnSuccessListener {
+                        user.username = value
+                        onSuccess()
+                    }
+
+            }
     }
 }

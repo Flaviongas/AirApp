@@ -30,17 +30,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -50,7 +47,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.airapp.CustomDialog
 import com.example.airapp.R
-import com.example.airapp.UserData
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -60,8 +56,13 @@ import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.setValue
+import com.example.airapp.CurrentUser
+import com.example.airapp.EditUsernameButton
 import com.example.airapp.LogoutButton
+import com.example.airapp.addUsername
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -99,14 +100,9 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
     val selectedTab = remember { mutableIntStateOf(0) }
     val showDialog = remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+    // Iniciamos un state que contendrá al usuario
+    var current_user by remember { mutableStateOf<CurrentUser?>(null) }
 
-    if(showDialog.value) {
-        CustomDialog(value = "", setShowDialog = {
-            showDialog.value = it
-        }) {
-            Log.i("HomePage", "HomePage: $it")
-        }
-    }
 
     Scaffold { paddingValues ->
         Box(
@@ -162,6 +158,7 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
 
                         LaunchedEffect(Unit) {
                             try {
+                                // Obtenemos datos del tiempo de la db
                                 db.collection("weather_metrics").get()
                                     .addOnSuccessListener { result ->
                                         weather_data_db.clear()
@@ -178,6 +175,30 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
                                     .addOnFailureListener {
                                         Log.e("Firestore", "Error al obtener datos", it)
                                     }
+
+                                auth.currentUser?.email?.let { email ->
+                                    // Vemos si el usuario tiene un nombre de usuario registrado
+                                    db.collection("users")
+                                        .whereEqualTo("email", email)
+                                        .get()
+                                        .addOnSuccessListener { result ->
+                                            if (result.isEmpty) {
+                                                // Si no tiene username, creamos uno con el correo
+                                                val newUser = CurrentUser(
+                                                    email = email,
+                                                    username = email.split('@')[0] // Default username
+                                                )
+                                                addUsername(newUser)
+                                            } else {
+                                                current_user = result.documents.first().toObject(
+                                                    CurrentUser::class.java)
+                                            }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.e("Firestore", "Error fetching user", e)
+                                        }
+                                }
+
                             } catch (e: Exception) {
                                 Log.e("Firestore", "Initialization error", e)
                             }
@@ -189,15 +210,18 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
                             modifier = Modifier.padding(bottom = 12.dp)
                         ) {
                             Text(
-                            "Bienvenido, ${auth.currentUser?.email.toString().split("@")[0] ?: "Usuario"}",
-                                //"Bienvenid@, $savedName",
+                                // Si aun no se obtiene el usuario de la db, se muestra el texto "Cargando..."
+                                text = current_user?.let { "Bienvenido ${it.username}" } ?: "Cargando...",
                                 color = Color.White,
                                 fontSize = 22.sp,
                                 fontFamily = poppinsFamily,
                                 fontWeight = FontWeight.Medium
                             )
-                            Spacer(modifier = Modifier.weight(1f))
-                            LogoutButton(navController = navController, auth = auth)
+                            if(auth.currentUser!=null){
+                            EditUsernameButton(onClick = {showDialog.value= true})
+                                Spacer(modifier = Modifier.weight(1f))
+                                LogoutButton(navController = navController, auth = auth)
+                            }
                         }
 
                         // Información principal del clima
@@ -215,10 +239,8 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // In your WeatherScreen composable:
                     WeatherMetrics(
                         selectedTab = selectedTab.value,
-
                         // Lista vacía si aun no se obtienen los datos
                         weatherDays = if (weather_data_db.isNotEmpty()) weather_data_db.sortedWith(compareBy({it.Aire})).reversed() else emptyList()
                     )
@@ -235,6 +257,19 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
                 }
             }
         }
+    }
+
+    if(showDialog.value) {
+        CustomDialog(value = "", setShowDialog = { showDialog.value = it } ,
+            current_user = current_user,
+            onUsernameChanged = { newUsername ->
+                    val temp = CurrentUser(current_user?.email ?: "", newUsername)
+                    current_user = null  // Eliminamos el nombre de usuario anterior
+                    current_user = temp  // Forzamos a que se actualize el estado
+
+            }
+        )
+
     }
 }
 
@@ -376,6 +411,7 @@ fun DaySelector(selectedTab: Int, onTabSelected: (Int) -> Unit) {
 @Composable
 fun WeatherMetrics(selectedTab: Int,weatherDays : List<WeatherData>) {
     if (weatherDays.isEmpty()) {
+        // Si aun no se obtienen los datos, mostrar animación de carga
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -384,20 +420,6 @@ fun WeatherMetrics(selectedTab: Int,weatherDays : List<WeatherData>) {
         }
         return
     }
-//    val weatherDays = listOf(
-//        WeatherData(
-//            "ica 22", "412 ppm", "715 hpa", "18°C",
-//            "Moderado", "Regular", "↓ 15 hpa", "↓ 1.2°C"
-//        ),
-//        WeatherData(
-//            "ica 15", "388 ppm", "735 hpa", "5°C",
-//            "Excelente", "Bueno", "↑ 8 hpa", "↑ 2.5°C"
-//        ),
-//        WeatherData(
-//            "ica 08", "405 ppm", "710 hpa", "-2°C",
-//            "Bueno", "Moderado", "↓ 25 hpa", "↓ 3.1°C"
-//        )
-//    )
 
     Column(
         modifier = Modifier.fillMaxWidth()

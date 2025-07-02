@@ -58,6 +58,7 @@ import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.mutableStateListOf
 import com.example.airapp.LogoutButton
@@ -72,15 +73,17 @@ val textColor = Color(0xFF1E1B1B)
 
 // "Objeto" para mantener estructura
 data class WeatherData(
-    val Aire: String,
-    val Dioxide: String,
-    val Humedad: String,
-    val Temperatura: String,
-    val Aire_Outlook: String,
-    val Dioxide_Outlook: String,
-    val Humedad_Change: String,
-    val Temperatura_Change: String
-)
+    val Aire: String = "",
+    val Dioxide: String = "",
+    val Humedad: String = "",
+    val Temperatura: String = "",
+    val Aire_Outlook: String = "",
+    val Dioxide_Outlook: String = "",
+    val Humedad_Change: String = "",
+    val Temperatura_Change: String = ""
+) {
+    constructor() : this("", "", "", "", "", "", "", "") // Required for Firestore
+}
 
 // Colores fijos para los iconos como en Days.kt
 val airQualityIconColor = Color(0xFF4CAF50) // Verde para calidad de aire
@@ -156,20 +159,28 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
                             .fillMaxSize()
                             .padding(horizontal = 24.dp, vertical = 16.dp)
                     ) {
-                        val context = LocalContext.current
 
                         LaunchedEffect(Unit) {
-                            db.collection("weather_metrics").get()
-                                .addOnSuccessListener { result ->
-                                    weather_data_db.clear()
-                                    for (document in result) {
-                                        val day = document.toObject(WeatherData::class.java)
-                                        weather_data_db.add(day)
+                            try {
+                                db.collection("weather_metrics").get()
+                                    .addOnSuccessListener { result ->
+                                        weather_data_db.clear()
+                                        for (document in result) {
+                                            try {
+                                                val day = document.toObject(WeatherData::class.java)
+                                                weather_data_db.add(day)
+                                                Log.i("DATA",weather_data_db.toString())
+                                            } catch (e: Exception) {
+                                                Log.e("Firestore", "Error parsing document", e)
+                                            }
+                                        }
                                     }
-                                }
-                                .addOnFailureListener {
-                                    Log.e("Firestore", "Error al obtener datos", it)
-                                }
+                                    .addOnFailureListener {
+                                        Log.e("Firestore", "Error al obtener datos", it)
+                                    }
+                            } catch (e: Exception) {
+                                Log.e("Firestore", "Initialization error", e)
+                            }
                         }
 
                         // Header con nombre de usuario
@@ -204,7 +215,13 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    WeatherMetrics(selectedTab.value)
+                    // In your WeatherScreen composable:
+                    WeatherMetrics(
+                        selectedTab = selectedTab.value,
+
+                        // Lista vacía si aun no se obtienen los datos
+                        weatherDays = if (weather_data_db.isNotEmpty()) weather_data_db.sortedWith(compareBy({it.Aire})).reversed() else emptyList()
+                    )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
@@ -357,21 +374,30 @@ fun DaySelector(selectedTab: Int, onTabSelected: (Int) -> Unit) {
 }
 
 @Composable
-fun WeatherMetrics(selectedTab: Int) {
-    val weatherDays = listOf(
-        WeatherData(
-            "ica 22", "412 ppm", "715 hpa", "18°C",
-            "Moderado", "Regular", "↓ 15 hpa", "↓ 1.2°C"
-        ),
-        WeatherData(
-            "ica 15", "388 ppm", "735 hpa", "5°C",
-            "Excelente", "Bueno", "↑ 8 hpa", "↑ 2.5°C"
-        ),
-        WeatherData(
-            "ica 08", "405 ppm", "710 hpa", "-2°C",
-            "Bueno", "Moderado", "↓ 25 hpa", "↓ 3.1°C"
-        )
-    )
+fun WeatherMetrics(selectedTab: Int,weatherDays : List<WeatherData>) {
+    if (weatherDays.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+//    val weatherDays = listOf(
+//        WeatherData(
+//            "ica 22", "412 ppm", "715 hpa", "18°C",
+//            "Moderado", "Regular", "↓ 15 hpa", "↓ 1.2°C"
+//        ),
+//        WeatherData(
+//            "ica 15", "388 ppm", "735 hpa", "5°C",
+//            "Excelente", "Bueno", "↑ 8 hpa", "↑ 2.5°C"
+//        ),
+//        WeatherData(
+//            "ica 08", "405 ppm", "710 hpa", "-2°C",
+//            "Bueno", "Moderado", "↓ 25 hpa", "↓ 3.1°C"
+//        )
+//    )
 
     Column(
         modifier = Modifier.fillMaxWidth()

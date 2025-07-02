@@ -189,6 +189,7 @@ fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
                                                     username = email.split('@')[0] // Default username
                                                 )
                                                 addUsername(newUser)
+                                                current_user = newUser
                                             } else {
                                                 current_user = result.documents.first().toObject(
                                                     CurrentUser::class.java)

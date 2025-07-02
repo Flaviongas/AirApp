@@ -25,7 +25,9 @@ class MainActivity : ComponentActivity() {
                 color = Color(0xFF011A37)
             ) {
                 val navController = rememberNavController()
-                NavHost(navController=navController, startDestination="Login", builder={
+                NavHost(navController=navController, 
+startDestination = if (user != null) "home" else "login"
+                builder={
                     composable("Login") {
                         LoginScreen(navController, auth)
                     }

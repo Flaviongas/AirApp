@@ -26,10 +26,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.airapp.LoginScreen
+import com.google.firebase.auth.FirebaseAuth
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val auth: FirebaseAuth = FirebaseAuth.getInstance()
         setContent {
             Surface(
                 modifier = Modifier.fillMaxSize(),
@@ -38,12 +41,12 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController=navController, startDestination="Login", builder={
                     composable("Login") {
-                        LoginScreen(navController)
+                        LoginScreen(navController, auth)
                     }
                     composable("Register") {
                         RegisterScreen(navController = navController)}
                     composable("Home") {
-                        WeatherScreen(navController)
+                        WeatherScreen(navController, auth)
                     }
                     composable("Plots") {
                         Plots(navController)

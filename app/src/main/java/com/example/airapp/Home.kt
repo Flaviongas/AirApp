@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.airapp.CustomDialog
 import com.example.airapp.R
-import com.example.airapp.TransparentEditButton
 import com.example.airapp.UserData
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -60,6 +59,10 @@ import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.mutableStateListOf
+import com.example.airapp.LogoutButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 val poppinsFamily = FontFamily(
     Font(R.font.poppins_regular, FontWeight.Normal)
@@ -87,7 +90,9 @@ val temperatureIconColor = Color(0xFFFF5722) // Rojo naranja para temperatura
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeatherScreen(navController: NavController) {
+fun WeatherScreen(navController: NavController, auth: FirebaseAuth) {
+    val db = FirebaseFirestore.getInstance()
+    val weather_data_db = remember { mutableStateListOf<WeatherData>() }
     val selectedTab = remember { mutableIntStateOf(0) }
     val showDialog = remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
@@ -152,13 +157,19 @@ fun WeatherScreen(navController: NavController) {
                             .padding(horizontal = 24.dp, vertical = 16.dp)
                     ) {
                         val context = LocalContext.current
-                        val userPreferences = remember { UserData(context) }
-                        var savedName by remember { mutableStateOf("") }
 
                         LaunchedEffect(Unit) {
-                            userPreferences.getName.collect { name ->
-                                savedName = name
-                            }
+                            db.collection("weather_metrics").get()
+                                .addOnSuccessListener { result ->
+                                    weather_data_db.clear()
+                                    for (document in result) {
+                                        val day = document.toObject(WeatherData::class.java)
+                                        weather_data_db.add(day)
+                                    }
+                                }
+                                .addOnFailureListener {
+                                    Log.e("Firestore", "Error al obtener datos", it)
+                                }
                         }
 
                         // Header con nombre de usuario
@@ -167,13 +178,15 @@ fun WeatherScreen(navController: NavController) {
                             modifier = Modifier.padding(bottom = 12.dp)
                         ) {
                             Text(
-                                "Bienvenid@, $savedName",
+                            "Bienvenido, ${auth.currentUser?.email.toString().split("@")[0] ?: "Usuario"}",
+                                //"Bienvenid@, $savedName",
                                 color = Color.White,
                                 fontSize = 22.sp,
                                 fontFamily = poppinsFamily,
                                 fontWeight = FontWeight.Medium
                             )
-                            TransparentEditButton(onClick = { showDialog.value = true })
+                            Spacer(modifier = Modifier.weight(1f))
+                            LogoutButton(navController = navController, auth = auth)
                         }
 
                         // Información principal del clima
